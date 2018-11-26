@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Form Validation</title>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="libs/vuelidate.min.js"></script>
+  <script src="libs/validators.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1>Form Validation</h1>
+    <form @submit.prevent="onRegister" autocomplete="off">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input v-model="form.name" @blur="$v.form.name.$touch()" :class="{error: shouldAppendErrorClass($v.form.name), valid: shouldAppendValidClass($v.form.name)}"
+          id="name">
+        <p v-if="$v.form.name.$error" class="error-message">The name field is required</p>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input v-model.number="form.age" @blur="$v.form.age.$touch()" :class="{error: shouldAppendErrorClass($v.form.age), valid: shouldAppendValidClass($v.form.age)}"
+          id="age">
+        <div v-if="$v.form.age.$error">
+          <p v-if="!$v.form.age.required" class="error-message">The age field is required</p>
+          <p v-else-if="!$v.form.age.integer" class="error-message">The age field should be an integer</p>
+          <p v-else-if="!$v.form.age.oldEnoughAndAlive" class="error-message">You should be at least 12 and younger
+            than 120 to continue</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="newsletter">Subscribe to the newsletter:</label>
+        <input v-model="form.newsletter" type="checkbox" id="newsletter">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input v-model="form.email" @blur="$v.form.email.$touch()" :class="{error: shouldAppendErrorClass($v.form.email), valid: shouldAppendValidClass($v.form.email)}"
+          id="email">
+        <p v-if="!$v.form.email.email && $v.form.email.$error" class="error-message">Invalid email address</p>
+        <p v-if="!$v.form.email.required && $v.form.email.$error" class="error-message">Email is required so we can
+          send you the newsletter</p>
+      </div>
+
+
+      <div class="form-group github-username">
+        <label for="github-username">GitHub username:</label>
+        <input v-model.lazy="$v.form.githubUsername.$model" :class="{error: shouldAppendErrorClass($v.form.githubUsername), valid: shouldAppendValidClass($v.form.githubUsername)}"
+          id="github-username">
+        <span v-show="$v.form.githubUsername.$pending" class="fa fa-spinner fa-spin"></span>
+        <p v-if="!$v.form.githubUsername.exists && $v.form.githubUsername.$error" class="error-message">There is not
+          GitHub user with this username</p>
+      </div>
+
+      <div class="form-group">
+        <label for="whatToDo">Code or Coffee:</label>
+        <input v-model.number="form.whatToDo" @blur="$v.form.whatToDo.$touch()" :class="{error: shouldAppendErrorClass($v.form.whatToDo), valid: shouldAppendValidClass($v.form.whatToDo)}"
+          id="whatToDo">
+        <p v-if="$v.form.whatToDo.$error && !$v.form.whatToDo.codeOrCoffee" class="error-message">Sorry! Code Or Coffee ? </p>
+      </div>
+
+      <div>
+        <button>Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
